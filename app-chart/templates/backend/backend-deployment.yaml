@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nest-app-test
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: nest-app-test
+
+  template:
+    metadata:
+      labels:
+        app: nest-app-test
+
+    spec:
+      containers:
+        - name: nest-app-test
+          image:     image: "{{ .Values.nestApp.image.repository }}:{{ .Values.nestApp.image.tag }}"
+          imagePullPolicy: {{ .Values.nestApp.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.backend.port }}
+
+          envFrom:
+            - secretRef:
+                name: app-secret
+
+          env:
+            - name: NODE_ENV
+              value: production
+
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.backend.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.backend.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 10

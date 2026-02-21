@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-app-test
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: react-app-test
+  template:
+    metadata:
+      labels:
+        app: react-app-test
+    spec:
+      containers:
+        - name: react-app-test
+#          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+#          imagePullPolicy: Always
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: { { .Values.frontend.image.pullPolicy } }
+          ports:
+            - containerPort: {{ .Values.frontend.port }}
+          env:
+            - name: REACT_APP_API_URL
+              value: {{ .Values.frontend.apiUrl }}

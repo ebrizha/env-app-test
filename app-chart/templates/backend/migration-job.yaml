@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nest-app-test-migrations
+  labels:
+    app: nest-app-test-migrations
+  annotations:
+    "helm.sh/hook": pre-upgrade,pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        app: nest-app-test-migrations
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: migrations
+          image: "{{ .Values.nestApp.image.repository }}:{{ .Values.nestApp.image.tag }}"
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Postgres at $POSTGRES_HOST:$POSTGRES_PORT..."
+              until nc -z $POSTGRES_HOST $POSTGRES_PORT; do
+                echo "Postgres not ready, sleeping 2s..."
+                sleep 2
+              done
+              echo "Postgres ready, running migrations..."
+              node dist/infrastructure/database/run-migrations.js
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: POSTGRES_PORT
+            - name: NODE_ENV
+              value: production
