@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nest-app-test
-          image:     image: "{{ .Values.nestApp.image.repository }}:{{ .Values.nestApp.image.tag }}"
+          image: "{{ .Values.nestApp.image.repository }}:{{ .Values.nestApp.image.tag }}"
           imagePullPolicy: {{ .Values.nestApp.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.backend.port }}
