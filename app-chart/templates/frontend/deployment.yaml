@@ -14,8 +14,6 @@ spec:
     spec:
       containers:
         - name: react-app-test
-#          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
-#          imagePullPolicy: Always
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:

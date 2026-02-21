@@ -11,7 +11,7 @@ backend:
   image:
     repository: ebrizha/nest-app-test
     tag: "latest"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   replicas: 2
   port: 3000
 
@@ -19,7 +19,7 @@ frontend:
   image:
     repository: ebrizha/react-app-test
     tag: "latest"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   replicas: 2
   port: 80
   apiUrl: http://react-app-test.local/api
