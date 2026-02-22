@@ -4,6 +4,9 @@ metadata:
   name: nest-app-test-migrations
   labels:
     app: nest-app-test-migrations
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
     metadata:
